@@ -8,8 +8,6 @@ public class User implements UserInterface{
   private String email;
   private String password;
   private String role = "admin";
-  private final CommentsDirector commentsDirector = new CommentsDirector();
-  private Comments comments = new Comments();
 
   public User(String name, String email, String password) {
     this.setName(name);
@@ -77,19 +75,13 @@ public class User implements UserInterface{
     this.role = role;
   }
 
+
   public String createComments(String content) {
-    CommentsDirector director = new CommentsDirector();
-    this.comments = director.builderComments(content);
+    Comments comments = new Comments(content);
     return comments.getTemporaryCode();
   }
 
-  public String createReply(String content) {
-    CommentsDirector director = new CommentsDirector();
-    Comments reply = director.builderReply(content, this.comments);
-    return reply.getTemporaryCode();
-  }
-
-  public void deleteComments(String temporaryCode) {
-    this.comments.deleteComments(temporaryCode);
+  public String createReply(String content, Comments origin) {
+    return origin.addReply(content);
   }
 }

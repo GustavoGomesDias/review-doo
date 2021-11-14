@@ -11,20 +11,27 @@ public class Comments {
   private boolean isReply = false; // Talvez não seja necessária com o banco
   private Comments origin;
 
-  public Comments() {
+  public Comments(String content) {
+    this.setId();
+    this.setTemporaryCode();
+    this.setContent(content);
+  }
 
+  public void createComments() {
+    // db.save(comments)
   }
 
   public Comments updateComments(String content, String temporaryCode) {
     return this;
   }
 
-  public void addReply(String content) {
+  public String addReply(String content) {
     // pesquisa no se tem respota no banco e adicona ao array
-    Comments comments = new Comments();
+    Comments comments = new Comments(content);
     comments.setReply(true);
     comments.setOriginComment(this);
     this.arrReplies.add(comments);
+    return comments.getTemporaryCode();
   }
 
   public void deleteComments(String temporaryCode) {
