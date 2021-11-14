@@ -1,5 +1,10 @@
 package user;
 
+import company.Category;
+import company.Company;
+
+import java.util.ArrayList;
+
 public class Admin implements UserInterface {
   private String name;
   private String email;
@@ -69,5 +74,19 @@ public class Admin implements UserInterface {
 
   public void setRole(String role) {
     this.role = role;
+  }
+
+  public Company acceptCreateCompanyRequest(Company company) { return company; }
+
+  public void acceptCreateCompanyRequest() {}
+
+  public ArrayList<Company> getAllCampanies () { return new ArrayList<Company>(); }
+
+  public void deleteComment() {}
+
+  public Category createCategory(int id, String name, String description) {
+    Category category = new Category(id, name, description);
+    // salva
+    return category;
   }
 }
