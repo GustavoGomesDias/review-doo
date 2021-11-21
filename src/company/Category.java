@@ -1,6 +1,7 @@
 package company;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Category {
   private int id;
@@ -8,8 +9,8 @@ public class Category {
   private String description;
   private ArrayList<Company> companies = new ArrayList<>();
 
-  public Category(int id, String name, String description) {
-    this.id = id;
+  public Category(String name, String description) {
+    this.id = new Random().nextInt();
     this.name = name;
     this.description = description;
   }

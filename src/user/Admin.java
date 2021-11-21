@@ -1,17 +1,21 @@
 package user;
 
+import comments.Comments;
 import company.Category;
 import company.Company;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Admin implements UserInterface {
+  private int id;
   private String name;
   private String email;
   private String password;
   private String role = "admin";
 
   public Admin(String name, String email, String password) {
+    this.id = new Random().nextInt();
     this.name = name;
     this.email = email;
     this.password = password;
@@ -44,6 +48,8 @@ public class Admin implements UserInterface {
     return null;
   }
 
+  public int getId() { return this.id; }
+
   public String getName() {
     return name;
   }
@@ -72,21 +78,103 @@ public class Admin implements UserInterface {
     return role;
   }
 
+  @Override
+  public String createComment(String email, String comment, int companyId) {
+    Comments comments = new Comments(comment);
+    // Salva no banco, como algo relacionado a uma company
+    return comments.getTemporaryCode();
+  }
+
+  @Override
+  public String createReply(String content, Comments origin) {
+    return origin.addReply(content);
+  }
+
   public void setRole(String role) {
     this.role = role;
   }
 
-  public Company acceptCreateCompanyRequest(Company company) { return company; }
+  public Company acceptCreateCompanyRequest(Company company) {
+    return company;
+  }
 
-  public void acceptCreateCompanyRequest() {}
+  public void acceptCreateCompanyRequest() {
+  }
 
-  public ArrayList<Company> getAllCampanies () { return new ArrayList<Company>(); }
+  public ArrayList<Company> getAllCampanies() {
+    return new ArrayList<Company>();
+  }
 
-  public void deleteComment() {}
+  public void deleteComment() {
+  }
 
-  public Category createCategory(int id, String name, String description) {
-    Category category = new Category(id, name, description);
+  public Category createCategory(String name, String description) {
+    Category category = new Category(name, description);
     // salva
     return category;
+  }
+
+  public UserInterface banUser(int id, String reason) {
+    // procura o user pelo id no banco
+    // seta como banido
+    return this; // retorna o user atualizado
+  }
+
+  public UserInterface unBanUser(int id, String reason) {
+    // procura o user pelo id no banco
+    // seta como desbanido
+    return this; // retorna o user atualizado
+  }
+
+  public Category getCategory(int categoryId) {
+    // procura a categoria pelo id;
+    return new Category("", ""); // retorna ela
+  }
+
+  public ArrayList<Category> getAllCategory() {
+    // pega todas as categoria no banco
+    // adiciona elas ao array
+    return new ArrayList<Category>(); // Retorna o array
+  }
+
+  public String deleteCategory(int categoryId) {
+    boolean deleted = false; // representação da resposta do banco
+    // procura no banco e deleta
+    // deleta, se o retorno for true
+    if (deleted) return "Houve um erro na deleção, tente novamente";
+    return "Deletado com sucesso!";
+  }
+
+  public Company getCompany(int companyId) {
+    // procura a empresa pelo nome (ou id);
+    return new Company("", 0); // representação, apenas
+  }
+
+  public ArrayList<Company> getAllCompany() {
+    // pega todas as categoria no banco
+    // adiciona elas ao array
+    return new ArrayList<Company>(); // Retorna o array
+  }
+
+  public String deleteCompany(int companyId) {
+    boolean deleted = false; // representação da resposta do banco
+    // procura no banco e deleta
+    // deleta, se o retorno for true
+    if (deleted) return "Houve um erro na deleção, tente novamente";
+    return "Deletado com sucesso!";
+  }
+
+  public ArrayList<Company> getCreateCompanyRequests() {
+    return new ArrayList<Company>();
+  }
+
+  public String resolveCreateCompanyRequest(int requestId) {
+    return "";
+  }
+
+  public String deleteComment(String reason) {
+    String result = "";
+
+    return result;
   }
 }

@@ -12,8 +12,8 @@ public class Comments {
   private Comments origin;
 
   public Comments(String content) {
-    this.setId();
-    this.setTemporaryCode();
+    this.setId(-1);
+    this.setTemporaryCode("");
     this.setContent(content);
   }
 
@@ -53,8 +53,9 @@ public class Comments {
     return temporaryCode;
   }
 
-  public void setTemporaryCode() {
-    this.temporaryCode = java.util.UUID.randomUUID().toString();
+  public void setTemporaryCode(String temporaryCode) {
+    if (temporaryCode.equals("")) this.temporaryCode = java.util.UUID.randomUUID().toString();
+    else this.temporaryCode = temporaryCode;
   }
 
   public ArrayList<Comments> getReplies() {
@@ -81,7 +82,11 @@ public class Comments {
     return id;
   }
 
-  public void setId() {
-    this.id = new Random().nextInt();
+  public void setId(int id) {
+    if (id != -1) {
+      this.id = id;
+    } else {
+      this.id = new Random().nextInt();
+    }
   }
 }

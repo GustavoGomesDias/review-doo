@@ -3,6 +3,7 @@ package company;
 import comments.Comments;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Company {
   private int id;
@@ -10,8 +11,8 @@ public class Company {
   private int imageId;
   private ArrayList<Comments> comments = new ArrayList<>();
 
-  public Company(int id, String name, int imageId) {
-    this.id = id;
+  public Company(String name, int imageId) {
+    this.id = new Random().nextInt();
     this.name = name;
     this.imageId = imageId;
   }
