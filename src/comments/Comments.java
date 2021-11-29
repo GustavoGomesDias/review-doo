@@ -2,9 +2,20 @@ package comments;
 
 import java.util.ArrayList;
 import java.util.Random;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
+@Entity
+@Table(name = "comments")
 public class Comments {
-  private int id; // mock
+  @Id
+  @GeneratedValue(generator = "increment")
+  @GenericGenerator(name = "increment", strategy = "increment")
+  private int id;
+  
   private String content;
   private String temporaryCode;
   private final ArrayList<Comments> arrReplies = new ArrayList<>();
@@ -12,7 +23,6 @@ public class Comments {
   private Comments origin;
 
   public Comments(String content) {
-    this.setId(-1);
     this.setTemporaryCode("");
     this.setContent(content);
   }
@@ -57,7 +67,7 @@ public class Comments {
     if (temporaryCode.equals("")) this.temporaryCode = java.util.UUID.randomUUID().toString();
     else this.temporaryCode = temporaryCode;
   }
-
+ 
   public ArrayList<Comments> getReplies() {
     return this.arrReplies;
   }
@@ -80,13 +90,5 @@ public class Comments {
 
   public int getId() {
     return id;
-  }
-
-  public void setId(int id) {
-    if (id != -1) {
-      this.id = id;
-    } else {
-      this.id = new Random().nextInt();
-    }
   }
 }

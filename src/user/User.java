@@ -1,50 +1,35 @@
 package user;
 
+import DAO.*;
 import comments.*;
+import company.Category;
 import company.Company;
+import java.util.List;
 
 import java.util.Random;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
+@Entity
+@Table(name = "users")
 public class User implements UserInterface{
+  @Id
+  @GeneratedValue(generator = "increment")
+  @GenericGenerator(name = "increment", strategy = "increment")
   private int id;
+  
   private String name;
   private String email;
   private String password;
   private String role = "admin";
 
   public User(String name, String email, String password) {
-    this.id = new Random().nextInt();
     this.setName(name);
     this.setEmail(email);
     this.setPassword(password);
-  }
-
-  @Override
-  public UserInterface generateUser() {
-    // salva no banco
-    return this;
-  }
-
-  @Override
-  public UserInterface updateUser(String name, String email, String password) {
-    if (name != null) this.name = name;
-    if (email != null) this.email = email;
-    if (password != null) this.password = password;
-    // Salva no banco
-    return this;
-  }
-
-
-  // Acredito que essa precisaria do framework/banco de dados
-  @Override
-  public UserInterface deleteUser(int id) {
-    return null;
-  }
-
-  // Acredito que essa precisaria do framework/banco de dados
-  @Override
-  public UserInterface login(String email, String password) {
-    return null;
   }
 
   public int getId() { return this.id; }
@@ -82,34 +67,32 @@ public class User implements UserInterface{
   }
 
 
+@Override
   public String createComment(String email, String comment, int companyId) {
     Comments comments = new Comments(comment);
-    // Salva no banco, como algo relacionado a uma company
+    GenericDAOImp<Comments> generic = new GenericDAOImp<>();
+    generic.salvar(comments);
     return comments.getTemporaryCode();
   }
 
+  @Override
   public String createReply(String content, Comments origin) {
     return origin.addReply(content);
   }
-
+  
   public String createCompanyRequest(String name, int imageId) {
+    GenericDAOImp<Company> generic = new GenericDAOImp();
     Company company = new Company(name, imageId);
-    // Salva como pedido de criar uma nova empresa
-    boolean result = true;
-    if (result) return "Pedido criado com sucesso!";
-    return "Erro ao criar um pedido";
+    generic.salvar(company);
+    return "Pedido criado com sucesso!";
   }
 
   public String deleteComment(int commentId, String temporaryCode) {
-    String[] db = new String[2]; // Representação do db
-    int dbId = new Random().nextInt();
-    db[0] = "content"; // Representação do db
-    db[1] = "temporaryCode"; // Representação do db
-    Comments comments = new Comments(db[0]); // pesquisa o comentário no banco e cria uma instância
-    comments.setTemporaryCode(temporaryCode);
-    comments.setId(dbId);
+    GenericDAOImp<Comments> generic = new GenericDAOImp();
+    Comments comments = generic.listar(Comments.class, commentId);
+    
     if (commentId == comments.getId() && temporaryCode.equals(comments.getTemporaryCode())) {
-      // delete
+      generic.delete(comments);
       return "Comentário deletado com sucesso!";
     }
     return "Comentário não encontrado!";
@@ -117,5 +100,39 @@ public class User implements UserInterface{
 
   public Company evaluate(int value, String featEvaluated) {
     return new Company("", 0);
+  }
+
+  @Override
+  public void deleteUser(int id) {
+    GenericDAOImp<UserInterface> generic = new GenericDAOImp();
+    generic.delete(this);
+  }
+  
+  public List getAllCampanies() {
+    GenericDAOImp<Company> generic = new GenericDAOImp<>();
+    Company company = new Company();
+    return generic.listarTodos(company.getClass());
+  }
+  
+  public Category getCategory(int categoryId) {
+    GenericDAOImp<Category> generic = new GenericDAOImp<>();
+    return (Category) generic.listar(Category.class, id);
+  }
+
+  public List<Category> getAllCategory() {
+    GenericDAOImp<Category> generic = new GenericDAOImp<>();
+    return generic.listarTodos(Category.class);
+  }
+  
+  public List<Company> getAllCompany() {
+    GenericDAOImp<Company> generic = new GenericDAOImp<>();
+    return generic.listarTodos(Company.class);
+  }
+
+  public String deleteCompany(int companyId) {
+    GenericDAOImp<Company> generic = new GenericDAOImp<>();
+    Company company = (Company) generic.listar(Company.class, companyId);
+    generic.delete(company);
+    return "Deletado com sucesso!";
   }
 }

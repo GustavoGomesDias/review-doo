@@ -3,73 +3,62 @@ package user;
 import comments.Comments;
 import company.Category;
 import company.Company;
+import DAO.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import javax.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+// import org.hibernate.annotations.*;
 
+@Entity
+@Table(name = "users")
 public class Admin implements UserInterface {
+  @Id
+  @GeneratedValue(generator = "increment")
+  @GenericGenerator(name = "increment", strategy = "increment")
   private int id;
+  
   private String name;
   private String email;
   private String password;
   private String role = "admin";
 
   public Admin(String name, String email, String password) {
-    this.id = new Random().nextInt();
     this.name = name;
     this.email = email;
     this.password = password;
   }
 
-  @Override
-  public UserInterface generateUser() {
-    // salva no banco
-    return this;
-  }
-
-  @Override
-  public UserInterface updateUser(String name, String email, String password) {
-    if (name != null) this.name = name;
-    if (email != null) this.email = email;
-    if (password != null) this.password = password;
-    // salva no banco
-    return this;
-  }
-
-  // Acredito que essa precisaria do framework/banco de dados
-  @Override
-  public UserInterface deleteUser(int id) {
-    return null;
-  }
-
-  // Acredito que essa precisaria do framework/banco de dados
-  @Override
-  public UserInterface login(String email, String password) {
-    return null;
-  }
-
   public int getId() { return this.id; }
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void setName(String name) {
     this.name = name;
   }
 
+  @Override
   public String getEmail() {
     return email;
   }
 
+  @Override
   public void setEmail(String email) {
     this.email = email;
   }
 
+  @Override
   public String getPassword() {
     return password;
   }
 
+  @Override
   public void setPassword(String password) {
     this.password = password;
   }
@@ -77,11 +66,16 @@ public class Admin implements UserInterface {
   public String getRole() {
     return role;
   }
+  
+  public void setRole(String role) {
+    this.role = role;
+  }
 
   @Override
   public String createComment(String email, String comment, int companyId) {
     Comments comments = new Comments(comment);
-    // Salva no banco, como algo relacionado a uma company
+    GenericDAOImp<Comments> generic = new GenericDAOImp<>();
+    generic.salvar(comments);
     return comments.getTemporaryCode();
   }
 
@@ -89,82 +83,67 @@ public class Admin implements UserInterface {
   public String createReply(String content, Comments origin) {
     return origin.addReply(content);
   }
-
-  public void setRole(String role) {
-    this.role = role;
+  
+  public void deleteComment(int id) {
+    GenericDAOImp<Comments> generic = new GenericDAOImp<>();
+    Comments comments = null;
+    comments = (Comments) generic.listar(comments.getClass(), id);
+    generic.delete(comments);
   }
 
-  public Company acceptCreateCompanyRequest(Company company) {
-    return company;
+  public void acceptCreateCompanyRequest(Company company) {
+    GenericDAOImp<Company> generic = new GenericDAOImp<>();
+    generic.salvar(company);
   }
 
-  public void acceptCreateCompanyRequest() {
-  }
-
-  public ArrayList<Company> getAllCampanies() {
-    return new ArrayList<Company>();
-  }
-
-  public void deleteComment() {
+  public List getAllCampanies() {
+    GenericDAOImp<Company> generic = new GenericDAOImp<>();
+    Company company = new Company();
+    return generic.listarTodos(company.getClass());
   }
 
   public Category createCategory(String name, String description) {
     Category category = new Category(name, description);
-    // salva
+    GenericDAOImp<Category> generic = new GenericDAOImp<>();
+    generic.salvar(category);
     return category;
   }
 
-  public UserInterface banUser(int id, String reason) {
-    // procura o user pelo id no banco
-    // seta como banido
-    return this; // retorna o user atualizado
-  }
-
-  public UserInterface unBanUser(int id, String reason) {
-    // procura o user pelo id no banco
-    // seta como desbanido
-    return this; // retorna o user atualizado
-  }
-
   public Category getCategory(int categoryId) {
-    // procura a categoria pelo id;
-    return new Category("", ""); // retorna ela
+    GenericDAOImp<Category> generic = new GenericDAOImp<>();
+    return (Category) generic.listar(Category.class, id);
   }
 
-  public ArrayList<Category> getAllCategory() {
-    // pega todas as categoria no banco
-    // adiciona elas ao array
-    return new ArrayList<Category>(); // Retorna o array
+  public List<Category> getAllCategory() {
+    GenericDAOImp<Category> generic = new GenericDAOImp<>();
+    return generic.listarTodos(Category.class);
   }
 
   public String deleteCategory(int categoryId) {
-    boolean deleted = false; // representação da resposta do banco
-    // procura no banco e deleta
-    // deleta, se o retorno for true
-    if (deleted) return "Houve um erro na deleção, tente novamente";
+    GenericDAOImp<Category> generic = new GenericDAOImp<>();
+    Category category = (Category) generic.listar(Category.class, categoryId);
+    generic.delete(category);
     return "Deletado com sucesso!";
   }
 
   public Company getCompany(int companyId) {
-    // procura a empresa pelo nome (ou id);
-    return new Company("", 0); // representação, apenas
+    GenericDAOImp<Company> generic = new GenericDAOImp<>();
+    return (Company) generic.listar(Company.class,companyId);
   }
 
-  public ArrayList<Company> getAllCompany() {
-    // pega todas as categoria no banco
-    // adiciona elas ao array
-    return new ArrayList<Company>(); // Retorna o array
+  public List<Company> getAllCompany() {
+    GenericDAOImp<Company> generic = new GenericDAOImp<>();
+    return generic.listarTodos(Company.class);
   }
 
   public String deleteCompany(int companyId) {
-    boolean deleted = false; // representação da resposta do banco
-    // procura no banco e deleta
-    // deleta, se o retorno for true
-    if (deleted) return "Houve um erro na deleção, tente novamente";
+    GenericDAOImp<Company> generic = new GenericDAOImp<>();
+    Company company = (Company) generic.listar(Company.class, companyId);
+    generic.delete(company);
     return "Deletado com sucesso!";
   }
 
-  public ArrayList<Company> getCreateCompanyRequests() {
+  public List<Company> getCreateCompanyRequests() {
     return new ArrayList<Company>();
   }
 
@@ -176,5 +155,11 @@ public class Admin implements UserInterface {
     String result = "";
 
     return result;
+  }
+  
+  public void deleteUser(int id) {
+    GenericDAOImp<UserInterface> generic = new GenericDAOImp();
+    UserInterface user = generic.listar(UserInterface.class, id);
+    generic.delete(user);
   }
 }

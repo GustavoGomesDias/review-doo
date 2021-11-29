@@ -1,32 +1,38 @@
 package company;
 
-import comments.Comments;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
-import java.util.ArrayList;
-import java.util.Random;
-
+@Entity
+@Table(name = "company")
 public class Company {
+  @Id
+  @GeneratedValue(generator = "increment")
+  @GenericGenerator(name = "increment", strategy = "increment")
   private int id;
+  
   private String name;
   private int imageId;
-  private ArrayList<Comments> comments = new ArrayList<>();
+  private boolean isRequest;
 
-  public Company(String name, int imageId) {
-    this.id = new Random().nextInt();
+  public Company(String name, int imageId, boolean isRequest) {
     this.name = name;
     this.imageId = imageId;
+    this.isRequest = isRequest;
   }
 
   public void createCompany() {
     // db.save(this)
   }
+  
+  public boolean getIsRequest() { return this.isRequest; }
+  public void setIsRequest(boolean isRequest) { this.isRequest = isRequest; }
 
   public int getId() {
     return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
   }
 
   public int getImageId() {
@@ -43,18 +49,5 @@ public class Company {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public ArrayList<Comments> getComments() {
-    return this.comments;
-  }
-
-  public void setComments(Comments comments) {
-    // Buscar no banco e adicionar aqui
-    this.comments.add(comments);
-  }
-
-  public Company getCompany(int companyId) {
-    return this;
   }
 }

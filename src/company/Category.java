@@ -2,12 +2,22 @@ package company;
 
 import java.util.ArrayList;
 import java.util.Random;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
+@Entity
+@Table(name = "category")
 public class Category {
+  @Id
+  @GeneratedValue(generator = "increment")
+  @GenericGenerator(name = "increment", strategy = "increment")
   private int id;
+  
   private String name;
   private String description;
-  private ArrayList<Company> companies = new ArrayList<>();
 
   public Category(String name, String description) {
     this.id = new Random().nextInt();
@@ -17,10 +27,6 @@ public class Category {
 
   public int getId() {
     return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
   }
 
   public String getName() {
