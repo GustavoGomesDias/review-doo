@@ -2,10 +2,7 @@ package company;
 
 import java.util.ArrayList;
 import java.util.Random;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -16,7 +13,9 @@ public class Category {
   @GenericGenerator(name = "increment", strategy = "increment")
   private int id;
   
+  @Column(name = "name")
   private String name;
+  @Column(name = "description")
   private String description;
 
   public Category(String name, String description) {

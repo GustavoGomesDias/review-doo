@@ -7,10 +7,7 @@ import company.Company;
 import java.util.List;
 
 import java.util.Random;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -21,11 +18,15 @@ public class User implements UserInterface{
   @GenericGenerator(name = "increment", strategy = "increment")
   private int id;
   
+  @Column(name = "name")
   private String name;
+  @Column(name = "email")
   private String email;
+  @Column(name = "password")
   private String password;
-  private String role = "admin";
-
+  @Column(name = "role")
+  private String role = "user";
+  
   public User(String name, String email, String password) {
     this.setName(name);
     this.setEmail(email);
@@ -80,10 +81,17 @@ public class User implements UserInterface{
     return origin.addReply(content);
   }
   
-  public String createCompanyRequest(String name, int imageId) {
+  public String createCompanyRequest(String name, String imageUrl, int categoryId) {
     GenericDAOImp<Company> generic = new GenericDAOImp();
-    Company company = new Company(name, imageId);
+    GenericDAOImp<Category> genericCategory = new GenericDAOImp();
+    Category category = genericCategory.listar(Category.class, categoryId);
+    Company company = new Company();
+    company.setImageUrl(imageUrl);
+    company.setName(name);
+    company.setIsRequest(true);
+    company.setCategory(category);
     generic.salvar(company);
+    company.notifyObs();
     return "Pedido criado com sucesso!";
   }
 
@@ -99,7 +107,7 @@ public class User implements UserInterface{
   }
 
   public Company evaluate(int value, String featEvaluated) {
-    return new Company("", 0);
+    return new Company();
   }
 
   @Override

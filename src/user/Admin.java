@@ -4,25 +4,29 @@ import comments.Comments;
 import company.Category;
 import company.Company;
 import DAO.*;
+import report.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 // import org.hibernate.annotations.*;
 
 @Entity
 @Table(name = "users")
-public class Admin implements UserInterface {
+public class Admin implements UserInterface, Observer {
   @Id
   @GeneratedValue(generator = "increment")
   @GenericGenerator(name = "increment", strategy = "increment")
   private int id;
   
+  @Column(name = "name")
   private String name;
+  @Column(name = "email")
   private String email;
+  @Column(name = "password")
   private String password;
+  @Column(name = "role")
   private String role = "admin";
 
   public Admin(String name, String email, String password) {
@@ -162,4 +166,25 @@ public class Admin implements UserInterface {
     UserInterface user = generic.listar(UserInterface.class, id);
     generic.delete(user);
   }
+
+  public void notifyReport(Report report) {
+    GenericDAOImp<Report> generic = new GenericDAOImp();
+    generic.listar(Report.class, report.getId());
+    // sendEmail()
+    report.setSent(true);
+    generic.atualizar(report);
+  }
+  
+  public void notifyCompanyRequest(Company company) {
+    GenericDAOImp<Company> generic = new GenericDAOImp();
+    generic.listar(Company.class, company.getId());
+    // sendEmail()
+    generic.atualizar(company);
+  }
+  
+  @Override
+  public void updateObserver(Observable o) {
+    this.notifyReport((Report) o);
+  }
+  
 }

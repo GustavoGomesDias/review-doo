@@ -1,12 +1,10 @@
 package comments;
 
-import java.util.ArrayList;
-import java.util.Random;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import DAO.GenericDAOImp;
+import company.Company;
+import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
+import report.*;
 
 @Entity
 @Table(name = "comments")
@@ -16,10 +14,13 @@ public class Comments {
   @GenericGenerator(name = "increment", strategy = "increment")
   private int id;
   
+  @Column(name = "content")
   private String content;
+  @Column(name = "temporaryCode")
   private String temporaryCode;
-  private final ArrayList<Comments> arrReplies = new ArrayList<>();
-  private boolean isReply = false; // Talvez não seja necessária com o banco
+ 
+  @Column(name = "origin_id", nullable = true)
+  @OneToMany // ou ManyToOne
   private Comments origin;
 
   public Comments(String content) {
@@ -35,12 +36,11 @@ public class Comments {
     return this;
   }
 
-  public String addReply(String content) {
+  public String addReply(String content, Comments origin) {
     // pesquisa no se tem respota no banco e adicona ao array
     Comments comments = new Comments(content);
-    comments.setReply(true);
-    comments.setOriginComment(this);
-    this.arrReplies.add(comments);
+    comments.setOriginComment(origin);
+    
     return comments.getTemporaryCode();
   }
 
@@ -67,18 +67,6 @@ public class Comments {
     if (temporaryCode.equals("")) this.temporaryCode = java.util.UUID.randomUUID().toString();
     else this.temporaryCode = temporaryCode;
   }
- 
-  public ArrayList<Comments> getReplies() {
-    return this.arrReplies;
-  }
-
-  public boolean isReply() {
-    return isReply;
-  }
-
-  public void setReply(boolean reply) {
-    this.isReply = reply;
-  }
 
   public Comments getOriginComment() {
     return this.origin;
@@ -90,5 +78,14 @@ public class Comments {
 
   public int getId() {
     return id;
+  }
+  
+  public void createReport(String reason, Comments origin) {
+    Report report = new Report();
+    report.setComments(origin);
+    report.setReason(reason);
+    GenericDAOImp<Report> generic = new GenericDAOImp<>();
+    generic.salvar(report);
+    report.notifyObs();
   }
 }
