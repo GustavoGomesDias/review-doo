@@ -1,5 +1,7 @@
 package company;
 
+import DAO.GenericDAOImp;
+import java.util.List;
 import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import report.*;
@@ -23,6 +25,8 @@ public class Company extends Observable {
   // ou @ManyToOne, mas cada empresapode ter só uma categoria (ou seja, deve-se pegar a categoria "main" da empresa)
   @OneToMany
   private Category category;
+  
+  private List<EvaluateItem> items;
 
   public Company(String name, String imagerl, boolean isRequest) {
     this.name = name;
@@ -31,19 +35,21 @@ public class Company extends Observable {
   }
 
   public Company() {
-    
+
   }
-  
-  public int getId() { return this.id; }
+
+  public int getId() {
+    return this.id;
+  }
 
   public void setCategory(Category category) {
     this.category = category;
   }
-  
+
   public Category getCategory() {
     return this.category;
   }
-  
+
   public void createCompany() {
     // db.save(this)
   }
@@ -54,10 +60,6 @@ public class Company extends Observable {
 
   public void setIsRequest(boolean isRequest) {
     this.isRequest = isRequest;
-  }
-
-  public int getId() {
-    return id;
   }
 
   public String getImageUrl() {
@@ -74,5 +76,17 @@ public class Company extends Observable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void createEvaluateItem(String name, String description) {
+    GenericDAOImp<EvaluateItem> generic = new GenericDAOImp();
+    EvaluateItem eval = new EvaluateItem(name, description);
+    eval.setCompany(this);
+    generic.salvar(eval);
+  }
+  
+  public void getAllEvaluateItems() {
+    CompanyDAOImp dao = new CompanyDAOImp();
+    this.items = dao.getAllEvaluateItems(this);
   }
 }

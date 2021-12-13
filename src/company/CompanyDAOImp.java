@@ -42,4 +42,14 @@ public class CompanyDAOImp extends GenericDAOImp<Company> implements CompanyDAO{
     return companies;
   }
   
+  @Override
+  public List<EvaluateItem> getAllEvaluateItems(Company company) {
+    Session session = HibernateUtil.getSession().openSession();
+    Transaction transaction = session.beginTransaction();
+    List<EvaluateItem> items = session.createQuery("'from evaluateItems where company.id = '" + company.getId() + "'").list();
+    transaction.commit();
+    session.flush();
+    session.close();
+    return items;
+  }
 }

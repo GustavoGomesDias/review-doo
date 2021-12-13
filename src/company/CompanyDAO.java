@@ -6,4 +6,5 @@ public interface CompanyDAO extends GenericDAO<Company> {
   public List<Company> getAllRequests();
   public void acceptRequest(Company company);
   public void recuseRequest(Company company);
+  public List<EvaluateItem> getAllEvaluateItems(Company company);
 }

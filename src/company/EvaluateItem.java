@@ -1,13 +1,11 @@
 package company;
 
-import java.util.ArrayList;
-import java.util.Random;
 import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "category")
-public class Category {
+@Table(name = "evaluateItems")
+public class EvaluateItem {
   @Id
   @GeneratedValue(generator = "increment")
   @GenericGenerator(name = "increment", strategy = "increment")
@@ -15,18 +13,18 @@ public class Category {
   
   @Column(name = "name")
   private String name;
+  
   @Column(name = "description")
   private String description;
-
-  public Category(String name, String description) {
+  
+  @OneToMany
+  private Company company;
+  
+  public EvaluateItem(String name, String description) {
     this.name = name;
     this.description = description;
   }
-
-  public int getId() {
-    return id;
-  }
-
+  
   public String getName() {
     return name;
   }
@@ -42,10 +40,8 @@ public class Category {
   public void setDescription(String description) {
     this.description = description;
   }
-
-  public Category updateCategory(int categoryId) {
-    return this;
+  
+  public void setCompany(Company company) {
+    this.company =  company;
   }
-
-  public void deleteCategory(int categoryId) {}
 }

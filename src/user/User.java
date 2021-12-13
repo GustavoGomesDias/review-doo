@@ -26,6 +26,8 @@ public class User implements UserInterface{
   private String password;
   @Column(name = "role")
   private String role = "user";
+  @Column(name = "isBanned")
+  private boolean isBanned = false;
   
   public User(String name, String email, String password) {
     this.setName(name);
@@ -37,6 +39,10 @@ public class User implements UserInterface{
 
   public String getName() {
     return name;
+  }
+  
+  public boolean getIsBanned() {
+    return this.isBanned;
   }
 
   public void setName(String name) {
