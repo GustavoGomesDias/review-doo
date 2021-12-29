@@ -12,7 +12,7 @@ public class CommentsDAOImp extends GenericDAOImp<CommentsAbstract> implements C
    Session session = HibernateUtil.getSession().openSession();
     Transaction transaction = session.beginTransaction();
     List<CommentsAbstract> listOfComments;
-    listOfComments = (List<CommentsAbstract>) session.createQuery("'from users where origin_id = '" + id);
+    listOfComments = (List<CommentsAbstract>) session.createQuery("'from comments where origin_id = '" + id);
     transaction.commit();
     session.flush();
     session.close();
