@@ -1,4 +1,4 @@
-package evaluate;
+package evaluateBuilder;
 
 import company.EvaluateItem;
 import javax.persistence.*;

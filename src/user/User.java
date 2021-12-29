@@ -1,7 +1,7 @@
 package user;
 
+import commentsComposite.Comments;
 import DAO.*;
-import comments.*;
 import company.Category;
 import company.Company;
 import java.util.List;
@@ -76,15 +76,20 @@ public class User implements UserInterface{
 
 @Override
   public String createComment(String email, String comment, int companyId) {
-    Comments comments = new Comments(comment);
+    GenericDAOImp<Company> genericCompany = new GenericDAOImp<>();
+    Comments comments = new Comments(comment, null, genericCompany.listar(Company.class, companyId));
     GenericDAOImp<Comments> generic = new GenericDAOImp<>();
     generic.salvar(comments);
     return comments.getTemporaryCode();
   }
 
   @Override
-  public String createReply(String content, Comments origin) {
-    return origin.addReply(content);
+  public String createReply(String content, Comments origin, int companyId) {
+    GenericDAOImp<Company> genericCompany = new GenericDAOImp<>();
+    Comments comments = new Comments(content, origin, genericCompany.listar(Company.class, companyId));
+    GenericDAOImp<Comments> generic = new GenericDAOImp<>();
+    generic.salvar(comments);
+    return comments.getTemporaryCode();
   }
   
   public String createCompanyRequest(String name, String imageUrl, int categoryId) {

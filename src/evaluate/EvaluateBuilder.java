@@ -1,4 +1,4 @@
-package evaluate;
+package evaluateBuilder;
 
 import DAO.GenericDAOImp;
 import company.EvaluateItem;

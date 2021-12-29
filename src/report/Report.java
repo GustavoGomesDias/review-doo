@@ -1,6 +1,6 @@
 package report;
 
-import comments.Comments;
+import commentsComposite.Comments;
 import java.io.Serializable;
 import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;

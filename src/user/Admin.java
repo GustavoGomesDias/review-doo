@@ -1,6 +1,6 @@
 package user;
 
-import comments.Comments;
+import commentsComposite.Comments;
 import company.Category;
 import company.Company;
 import DAO.*;
